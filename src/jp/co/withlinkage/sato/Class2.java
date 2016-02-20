@@ -2,6 +2,8 @@ package jp.co.withlinkage.sato;
 
 public class Class2 implements If1{
 
+	protected int _pi;
+
 	private String name;
 
 	/**

@@ -171,11 +171,6 @@ public class CsvReader {
 				} catch(IndexOutOfBoundsException e) {
 					p = resize();
 					_buf[p++] = c;
-					/*
-					 * if Index of line is out of bounds,
-					 * it means line is end by escape char,
-					 * escape char set in the columns.
-					 */
 				}
 			}
 			// last

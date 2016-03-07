@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import jp.co.withlinkage.naokit.common.io.CsvCol;
 import jp.co.withlinkage.naokit.common.io.CsvColFormat;
+import jp.co.withlinkage.naokit.common.io.CsvFile;
 import jp.co.withlinkage.naokit.common.io.CsvReaderEx;
 
 public class CsvReaderExTest {
@@ -35,6 +36,7 @@ public class CsvReaderExTest {
 		}
 	}
 
+	@CsvFile
 	public static class Bean {
 		@CsvCol(1)
 		private int no;

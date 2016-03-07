@@ -29,29 +29,37 @@ public class CsvReaderEx<T> {
 	private final CsvReader _reader;
 	/** setter to invoke */
 	private final List<Setter> _setters = new ArrayList<>();
+	/** label row already read? */
+	private boolean _readLabel;
 
 	/**
-	 * @param clazz
-	 * @param reader
+	 * @param clazz class of bean
+	 * @param file file to read
+	 * @param charset char set of file
+	 * @throws IOException
 	 */
-	public CsvReaderEx(Class<T> clazz, CsvReader reader) {
-		super();
+	public CsvReaderEx(Class<T> clazz, File file, String charset) throws IOException {
 		this._clazz = clazz;
-		this._reader = reader;
+		CsvFile ann = clazz.getAnnotation(CsvFile.class);
+		this._reader = ann != null
+				? new CsvReader(file, charset, ann.delimiter(), ann.quotationMark(), ann.escapeChar())
+				: new CsvReader(file, charset);
 
 		for(Field f : clazz.getDeclaredFields()) {
 			Setter s = createSetter(clazz, f);
 			if(s != null)
 				_setters.add(s);
 		}
-	}
 
-	public CsvReaderEx(Class<T> clazz, File file, String charset) throws IOException {
-		this(clazz, new CsvReader(file, charset));
+		this._readLabel = ann == null ? true : !ann.hasHeader();
 	}
-
+	/**
+	 * @param clazz class of bean
+	 * @param file file to read
+	 * @throws IOException
+	 */
 	public CsvReaderEx(Class<T> clazz, File file) throws IOException {
-		this(clazz, new CsvReader(file));
+		this(clazz, file, "UTF-8");
 	}
 
 	/**
@@ -62,6 +70,11 @@ public class CsvReaderEx<T> {
 	public T readLine() throws IOException {
 		List<String> cols = _reader.readLine();
 		if(cols == null) return null;
+		if(!_readLabel) {
+			cols = _reader.readLine();
+			_readLabel = true;
+			if(cols == null) return null;
+		}
 
 		T t = null;
 		try {
@@ -155,6 +168,15 @@ public class CsvReaderEx<T> {
 					}
 				};
 			}
+			if(t.equals(long.class) || t.equals(Long.class)) {
+				return new Setter() {
+					@Override
+					public void set(Object obj, List<String> list) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+						String s = list.get(index);
+						m.invoke(obj, s == null ? null : Long.parseLong(s));
+					}
+				};
+			}
 			if(t.equals(BigDecimal.class)) {
 				return new Setter() {
 					@Override
@@ -174,6 +196,21 @@ public class CsvReaderEx<T> {
 						String s = list.get(index);
 						try {
 							m.invoke(obj, s == null ? null : fmt.parse(s).intValue());
+						} catch (ParseException e) {
+							throw new IllegalArgumentException(e);
+						}
+					}
+				};
+			}
+			if(t.equals(long.class) || t.equals(Long.class)) {
+				final NumberFormat fmt = new DecimalFormat(format);
+				fmt.setParseIntegerOnly(true);
+				return new Setter() {
+					@Override
+					public void set(Object obj, List<String> list) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+						String s = list.get(index);
+						try {
+							m.invoke(obj, s == null ? null : fmt.parse(s).longValue());
 						} catch (ParseException e) {
 							throw new IllegalArgumentException(e);
 						}

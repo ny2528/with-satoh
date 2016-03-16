@@ -7,9 +7,9 @@ public class Main {
 	public static void main(String[] args){
 		List<Account> list = new ArrayList<Account>();
 		Account a1 = new Account(1234);
-		list.add(a1.accountNo);
+		list.add(a1);
 		Account a2 = new Account(1235);
-		list.add(a2.accountNo);
+		list.add(a2);
 		Collections.sort(list);
 	}
 }

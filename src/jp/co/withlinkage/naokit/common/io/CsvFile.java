@@ -11,7 +11,7 @@ public @interface CsvFile {
 	/** include heder rows? */
 	boolean hasHeader() default true;
 	/** delimiter */
-	char delimiter() default ',';
+	char delimiter() default CsvCommon.DEFAULT_DELIMITER;
 	/** quoted? */
 	boolean isQuoteString() default true;
 	/** quoted null? */
@@ -23,7 +23,7 @@ public @interface CsvFile {
 	/** quoted label? */
 	boolean isQuoteLabel() default false;
 	/** quotation mark */
-	char quotationMark() default '"';
+	char quotationMark() default CsvCommon.DEFAULT_QUOTATION_MARK;
 	/** escape charactor */
-	char escapeChar() default '\\';
+	char escapeChar() default CsvCommon.DEFAULT_ESCAPE_CHAR;
 }

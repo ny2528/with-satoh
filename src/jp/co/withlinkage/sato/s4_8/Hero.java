@@ -15,7 +15,7 @@ public class Hero implements Cloneable { // Cloneableインターフェースを
 
 	public Sword getSword(){ return this.sword; }
 
-// Objectクラスで定義してあるcloneメソッドはprotectedのため外部から呼び出すためにpublicでオーバーライドする
+	// Objectクラスで定義してあるcloneメソッドはprotectedのため外部から呼び出すためにpublicでオーバーライドする
 	public Hero clone(){
 		Hero result = new Hero(this.name);   // this.nameを変更したらコピー先のnameも変わらないと思われる。
 		result.hp = this.hp;

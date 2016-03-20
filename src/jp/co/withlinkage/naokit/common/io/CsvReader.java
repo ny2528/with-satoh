@@ -14,17 +14,7 @@ import java.util.List;
  *
  * @author naoky@with-linkage.co.jp
  */
-public class CsvReader {
-
-	/*
-	 * constants.
-	 */
-	/** default delimiter */
-	public static final char DEFAULT_DELIMITER = ',';
-	/** default quote */
-	public static final char DEFAULT_QUOTER = '"';
-	/** default escape char */
-	public static final char DEFAULT_ESCAPE = '\\';
+public class CsvReader implements CsvCommon{
 
 	/*
 	 * private fields.
@@ -34,7 +24,7 @@ public class CsvReader {
 	/** delimiter char */
 	private final char _delimiter;
 	/** quote char */
-	private final char _quoter;
+	private final char _quote;
 	/** escape char */
 	private final char _escape;
 	/** columns buffer */
@@ -48,14 +38,14 @@ public class CsvReader {
 	/**
 	 * @param reader reader
 	 * @param delimiter delimiter
-	 * @param quoter quote
+	 * @param quote quote
 	 * @param escape escape char
 	 */
-	public CsvReader(BufferedReader reader, char delimiter, char quoter, char escape) {
+	public CsvReader(BufferedReader reader, char delimiter, char quote, char escape) {
 		super();
 		this._reader = reader;
 		this._delimiter = delimiter;
-		this._quoter = quoter;
+		this._quote = quote;
 		this._escape = escape;
 	}
 	/**
@@ -63,43 +53,43 @@ public class CsvReader {
 	 * @param delimiter delimiter
 	 */
 	public CsvReader(BufferedReader reader, char delimiter) {
-		this(reader, delimiter, DEFAULT_QUOTER, DEFAULT_ESCAPE);
+		this(reader, delimiter, DEFAULT_QUOTATION_MARK, DEFAULT_ESCAPE_CHAR);
 	}
 	/**
 	 * @param reader reader
 	 * @param delimiter delimiter
 	 */
 	public CsvReader(BufferedReader reader) {
-		this(reader, DEFAULT_DELIMITER, DEFAULT_QUOTER, DEFAULT_ESCAPE);
+		this(reader, DEFAULT_DELIMITER, DEFAULT_QUOTATION_MARK, DEFAULT_ESCAPE_CHAR);
 	}
 	/**
 	 * @param in input stream reader
 	 * @param delimiter delimiter
-	 * @param quoter quote
+	 * @param quote quote
 	 * @param escape escape char
 	 * @throws IOException
 	 */
-	public CsvReader(InputStreamReader in, char delimiter, char quoter, char escape) throws IOException {
-		this(new BufferedReader(in), delimiter, quoter, escape);
+	public CsvReader(InputStreamReader in, char delimiter, char quote, char escape) throws IOException {
+		this(new BufferedReader(in), delimiter, quote, escape);
 	}
 	/**
 	 * @param in input stream reader
 	 * @throws IOException
 	 */
 	public CsvReader(InputStreamReader in) throws IOException {
-		this(in, DEFAULT_DELIMITER, DEFAULT_QUOTER, DEFAULT_ESCAPE);
+		this(in, DEFAULT_DELIMITER, DEFAULT_QUOTATION_MARK, DEFAULT_ESCAPE_CHAR);
 	}
 	/**
 	 * @param file file to read
 	 * @param charset char set of file
 	 * @param delimiter delimiter
-	 * @param quoter quote
+	 * @param quote quote
 	 * @param escape escape char
 	 * @throws IOException
 	 */
-	public CsvReader(File file, String charset, char delimiter, char quoter, char escape) throws IOException {
+	public CsvReader(File file, String charset, char delimiter, char quote, char escape) throws IOException {
 		this(new InputStreamReader(new FileInputStream(file), charset),
-				delimiter, quoter, escape);
+				delimiter, quote, escape);
 	}
 	/**
 	 * @param file file to read
@@ -108,7 +98,7 @@ public class CsvReader {
 	 * @throws IOException
 	 */
 	public CsvReader(File file, String charset, char delimiter) throws IOException {
-		this(file, charset, delimiter, DEFAULT_QUOTER, DEFAULT_ESCAPE);
+		this(file, charset, delimiter, DEFAULT_QUOTATION_MARK, DEFAULT_ESCAPE_CHAR);
 	}
 	/**
 	 * @param file file to read
@@ -116,14 +106,14 @@ public class CsvReader {
 	 * @throws IOException
 	 */
 	public CsvReader(File file, String charset) throws IOException {
-		this(file, charset, DEFAULT_DELIMITER, DEFAULT_QUOTER, DEFAULT_ESCAPE);
+		this(file, charset, DEFAULT_DELIMITER, DEFAULT_QUOTATION_MARK, DEFAULT_ESCAPE_CHAR);
 	}
 	/**
 	 * @param file file to read
 	 * @throws IOException
 	 */
 	public CsvReader(File file) throws IOException {
-		this(new BufferedReader(new FileReader(file)), DEFAULT_DELIMITER, DEFAULT_QUOTER, DEFAULT_ESCAPE);
+		this(new BufferedReader(new FileReader(file)), DEFAULT_DELIMITER, DEFAULT_QUOTATION_MARK, DEFAULT_ESCAPE_CHAR);
 	}
 
 	/*
@@ -159,7 +149,7 @@ public class CsvReader {
 						} else {
 							_buf[p++] = c;
 						}
-					} else if(c == _quoter) {
+					} else if(c == _quote) {
 						inQuote = !inQuote;
 						quoted = true;
 					} else if(c == _escape) {

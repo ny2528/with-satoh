@@ -10,9 +10,14 @@ import jp.co.withlinkage.naokit.common.util.StringUtil;
 
 public class PhpParser {
 
-	public Map<File, Map<String, Object>> getAllVariables(File dir) {
+	public Map<File, Map<String, Object>> getAllVariables(File dir) throws IOException {
 		Map<File, Map<String, Object>> result = new TreeMap<>();
 
+		for(File file : FileUtil.findR(dir, "*.php")) {
+			Map<String, Object> vars = getArrayVariables(file);
+			if(vars.size() > 0)
+				result.put(file, vars);
+		}
 		return result;
 	}
 

@@ -30,7 +30,7 @@ public class Hero {
 		this.hp = r.readLine();
 		this.mp = r.readLine();
 		r.close();
-//		hpとmpはString型として読み込まれ、加減算に用いる場合扱い。
+//		hpとmpはString型として読み込まれ、加減算に用いる場合扱いづらい。
 //		String → intのキャストも出来ず、どう後処理すればいいか。
 	}
 }
